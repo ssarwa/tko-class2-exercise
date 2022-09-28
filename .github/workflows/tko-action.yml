@@ -1,0 +1,40 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: tko-class2-sr
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+env:
+  SYSDIG_URL: https://us2.app.sysdig.com/
+  APP_NAME: node-js-frontend
+  REGISTRY: ghcr.io/ssarwa/tko-class2-exercise
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+  
+    - name: Get the version (or use any other method)
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+    
+    - name: Docker metadata tag set (or use some another method)
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        images: ${{ env.APP_NAME }}
+        tags: |
+          type=raw,priority=100,enable=${{ github.event_name == 'push' }},value=${{ steps.get_version.outputs.VERSION }}
+        labels: |
+          org.opencontainers.image.title=${{ env.APP_NAME }}
+
+    - name: Get the Current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
