@@ -51,3 +51,13 @@ jobs:
       with:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        context: ./application
+        push: false
+    
+    - name: Scan Image New
+      env:
+        SECURE_API_TOKEN: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+      run: |
+        curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(curl -L -s https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner"
+        chmod +x ./sysdig-cli-scanner
+        ./sysdig-cli-scanner --apiurl ${{ env.SYSDIG_URL }} ${{ env.REGISTRY }}/${{ steps.meta.outputs.images }}:${{ steps.meta.outputs.tags }} --output-json=/tmp/${{ env.APP_NAME }}.json
