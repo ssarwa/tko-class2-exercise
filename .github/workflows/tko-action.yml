@@ -60,4 +60,4 @@ jobs:
       run: |
         curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(curl -L -s https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner"
         chmod +x ./sysdig-cli-scanner
-        ./sysdig-cli-scanner --apiurl ${{ env.SYSDIG_URL }} ${{ env.REGISTRY }}/${{ steps.meta.outputs.images }}:${{ steps.meta.outputs.tags }} --output-json=/tmp/${{ env.APP_NAME }}.json
+        ./sysdig-cli-scanner --apiurl ${{ env.SYSDIG_URL }} ${{ env.REGISTRY }}/${{ steps.meta.outputs.images }}${{ steps.meta.outputs.tags }} --output-json=/tmp/${{ env.APP_NAME }}.json
